@@ -2,7 +2,7 @@
 #This will help you complete other lab experiments
 
 
-# Do not change the function definations or the parameters
+# Do not change the function definitions or the parameters
 import numpy as np
 import pandas as pd
 
@@ -10,6 +10,7 @@ import pandas as pd
 def create_numpy_ones_array(shape):
 	#return a numpy array with one at all index
 	array=None
+    array = np.ones(shape)
 	#TODO
 	return array
 
@@ -17,6 +18,7 @@ def create_numpy_ones_array(shape):
 def create_numpy_zeros_array(shape):
 	#return a numpy array with zeros at all index
 	array=None
+    array = np.zeros(shape)
 	#TODO
 	return array
 
@@ -24,13 +26,21 @@ def create_numpy_zeros_array(shape):
 def create_identity_numpy_array(order):
 	#return a identity numpy array of the defined order
 	array=None
+    array = np.identity(order)
 	#TODO
 	return array
 
 #input: numpy array
 def matrix_cofactor(array):
+
 	#return cofactor matrix of the given array
-	array=None
+    determinant = np.linalg.det(array)
+        if(determinant != 0):
+            cofactor = None
+            cofactor = np.linalg.inv(array).T * determinant
+
+    array = cofactor
+
 	#TODO
 	return array
 
@@ -44,6 +54,20 @@ def f1(X1,coef1,X2,coef2,seed1,seed2,seed3,shape1,shape2):
 	# where B is a random matrix of comaptible shape with seed3
 	# if dimension mismatch occur return -1
 	ans=None
+
+    try :
+
+        np.random.seed(seed1) 
+        W1 = np.random.rand(*shape1)
+        np.random.seed(seed2)
+        W2 = np.random.rand(*shape2)
+
+        ans = W1 x (X1 ** coef1) + W2 x (X2 ** coef2)
+
+    except :
+
+        ans = -1
+
 	#TODO
 	return ans
 
@@ -61,6 +85,11 @@ def fill_with_mode(filename, column):
         (Filled with above mentioned rules)
     """
     df=None
+
+    # assuming filename is supplied as 'filename.csv' & column name is supplied as a string
+    df = pd.read_csv(filename)
+    df[column].fillna(df[column].mode()[0], inplace=True)
+
     return df
 
 def fill_with_group_average(df, group, column):
@@ -78,7 +107,9 @@ def fill_with_group_average(df, group, column):
         (Representing entire data and where 'column' does not contain NaN values)
         (Filled with above mentioned rules)
     """
-    df=None
+   
+    df[column].fillna(df[group].mean(), inplace=True)
+
     return df
 
 
@@ -96,5 +127,8 @@ def get_rows_greater_than_avg(df, column):
         df: Pandas DataFrame object.
 	"""
 	df=None
+
+    df[df[column] > df[column].mean()]
+
     return df
 

@@ -26,7 +26,7 @@ get_rows_greater_than_avg = mymodule.get_rows_greater_than_avg
 
 
 def test_case():
-    df = pd.read_csv('example.csv')
+    df = pd.read_csv('/home/sr42/Projects/MI-lab/week1/example.csv')
     df['Attribute C'].fillna(
         df['Attribute C'].mode()[0], inplace=True)
 
@@ -82,7 +82,7 @@ def test_case():
 
 
     try:
-        if fill_with_mode('example.csv', 'Attribute C').equals(df):
+        if fill_with_mode('/home/sr42/Projects/MI-lab/week1/example.csv', 'Attribute C').equals(df):
             print("Test Case 7 for the function fill_with_mode PASSED")
         else:
             print("Test Case 7 for the function fill_with_mode FAILED")

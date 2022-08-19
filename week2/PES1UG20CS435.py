@@ -13,57 +13,60 @@ class Graph :
         self.goals = goals # 1D list
         self.pathCost = 0
 
-    def aStarRecurse(self, node, path):
-        
-        path.append(node)
-        possibleNodes = []
-        for i in range(1, len(self.cost[node])):
-            tuple = (i, self.cost[node][i]) # node number, cost to traverse
-            if ((self.cost[node][i] != 0) and (self.cost[node][i] != -1)):
-                tuple = (i, self.cost[node][i] + self.heuristic[i]) 
-                possibleNodes.append(tuple)
-
-        print(possibleNodes)
-        nextNode = min(possibleNodes, key = lambda t: t[1])[0]
-        print(nextNode)
-
-        if nextNode not in self.goals :
-            self.aStarRecurse(nextNode, path)
-        else :
-            path.append(nextNode)
-            
     def aStar(self) :
 
         path = []
+        explored = []
 
-        self.aStarRecurse(self.start, path)
-        #print(path)
+        path = [self.start]
+        frontier = [[0 + self.heuristic[self.start], path]]
+        while len(frontier) > 0:
+            curr_cost, curr_path = frontier.pop(0)
+            n = curr_path[-1]
+            curr_cost -= self.heuristic[n]
+            if n in self.goals:
+                return curr_path
+            explored.append(n)
+            children = [i for i in range(len(self.cost[0]))
+                        if self.cost[n][i] not in [0, -1]]
+            for i in children:
+                new_curr_path = curr_path + [i]
+                new_path_cost = curr_cost + self.cost[n][i] + self.heuristic[i]
+                if i not in explored and new_curr_path not in [i[1] for i in frontier]:
+                    frontier.append((new_path_cost, new_curr_path))
+                    frontier = sorted(frontier, key=lambda x: (x[0], x[1]))
+                elif new_curr_path in [i[1] for i in frontier]:
+                    index = search_q(frontier, new_curr_path)
+                    frontier[index][0] = min(frontier[index][0], new_path_cost)
+                    frontier = sorted(frontier, key=lambda x: (x[0], x[1]))
 
-        return path
-
-    def dfsRecurse(self, node, path) :
-
-        path.append(node)
-        possibleNodes = []
-        for i in range(1, len(self.cost[node])):
-            tuple = (i, self.cost[node][i]) # node number, cost to traverse
-            if ((self.cost[node][i] != 0) and (self.cost[node][i] != -1)):
-                possibleNodes.append(tuple)
-
-        nextNode = min(possibleNodes, key = lambda t: t[1])[0]
-
-        if nextNode not in self.goals :
-            self.dfsRecurse(nextNode, path)
-        else :
-            path.append(nextNode)
+        return list
 
     def dfs(self) :
 
         path = []
+        stack = [self.start]
+        visited = set()
 
-        self.dfsRecurse(self.start, path)
+        while len(stack):
+            current_node = stack.pop()
+            if current_node not in visited:
+                visited.add(current_node)
+                path.append(current_node)
 
-        return path
+            if current_node in self.goals:
+                return path
+            no_neighbour = 1
+            for neighbour in range(len(self.cost) - 1, 0, -1):
+                if neighbour not in visited and self.cost[current_node][neighbour] > 0:
+                    stack.append(neighbour)
+                    no_neighbour = 0
+            if no_neighbour and len(path):
+                stack.append(path[-1])
+                children = [i for i in range(len(cost)) if i not in visited and cost[path[-1]][i] > 0]
+                if len(children) == 0:
+                    path.pop()
+        return []
 
 def A_star_Traversal(cost, heuristic, start_point, goals):
     """

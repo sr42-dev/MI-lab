@@ -60,7 +60,6 @@ def get_information_gain(df, attribute):
     # finding the unique values in the column
     values = data[split_name].unique()
     
-    
     # making two subsets of the data, based on the unique values
     left_split = data[data[split_name] == values[0]]
     right_split = data[data[split_name] == values[1]]
@@ -73,7 +72,7 @@ def get_information_gain(df, attribute):
     
     # calculating information gain
     information_gain = original_entropy - to_subtract
-    print(information_gain)
+    
     return information_gain
 
 
@@ -87,4 +86,12 @@ def get_selected_attribute(df):
     example : ({'A':0.123,'B':0.768,'C':1.23} , 'C')
     '''
     # TODO
-    pass
+    
+    igDict = dict()
+    for column in df.columns:
+        igDict[column] = get_information_gain(df, column)
+
+    ansTuple = (igDict, max(igDict, key=igDict.get))
+    print(ansTuple[0])
+
+    return ansTuple

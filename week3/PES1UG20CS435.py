@@ -51,27 +51,7 @@ def get_avg_info_of_attribute(df, attribute):
 def get_information_gain(df, attribute):
     # TODO
 
-    data = df
-    split_name = attribute
-
-    # calculating the original entropy
-    original_entropy = get_entropy_of_dataset(df)
-    
-    # finding the unique values in the column
-    values = data[split_name].unique()
-    
-    # making two subsets of the data, based on the unique values
-    left_split = data[data[split_name] == values[0]]
-    right_split = data[data[split_name] == values[1]]
-    
-    # looping through the splits and calculate the subset entropies
-    to_subtract = 0
-    for subset in [left_split, right_split]:
-        prob = (subset.shape[0] / data.shape[0]) 
-        to_subtract += prob * get_entropy_of_dataset(df)
-    
-    # calculating information gain
-    information_gain = original_entropy - to_subtract
+    information_gain = get_entropy_of_dataset(df) - get_avg_info_of_attribute(df, attribute)
     
     return information_gain
 
@@ -88,10 +68,10 @@ def get_selected_attribute(df):
     # TODO
     
     igDict = dict()
-    for column in df.columns:
-        igDict[column] = get_information_gain(df, column)
+    for column in df.columns.tolist()[:-1]:
+        igDict[column] = float(get_information_gain(df, column))
 
-    ansTuple = (igDict, max(igDict, key=igDict.get))
-    print(ansTuple[0])
+    selected_attribute = max(igDict, key=igDict.get)
+    ansTuple = (igDict, selected_attribute)
 
     return ansTuple

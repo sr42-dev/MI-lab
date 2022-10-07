@@ -123,17 +123,21 @@ class Tensor:
         """
         # TODO
 
-        if gradients == None :
+        if gradients is None:
+
             grad1 = np.ones(self.shape)
             grad2 = np.ones(self.shape)
-        else :
+
+        else:
             grad1 = gradients
             grad2 = gradients
-        
+
         if self.history[1].requires_grad == True:
+
             self.history[1].grad += grad1
-        
+
         if self.history[2].requires_grad == True:
+
             self.history[2].grad += grad2
 
         return (grad1, grad2)
@@ -152,21 +156,25 @@ class Tensor:
                 Gradients to a and b
         """
         # TODO
-        
-        if gradients == None :
+
+        if gradients == None:
+
             grads = np.ones(self.shape)
 
-        else :  
+        else:
+
             grads = gradients
 
         grad1 = np.matmul(grads, np.transpose(self.history[2].arr))
         grad2 = np.matmul(np.transpose(self.history[1].arr), grads)
-
-        if self.history[1].requires_grad == True:
-            self.history[1].grad += grad1
         
+        if self.history[1].requires_grad == True:
+
+            self.history[1].grad += grad1
+
         if self.history[2].requires_grad == True:
-            self.history[2].grad += grad2
+
+            self.history[2].grad += grad2 
 
         return (grad1, grad2)
 
@@ -191,21 +199,23 @@ class Tensor:
         """
         # TODO
         
-        if self.history[0] == 'leaf':
-            
-            if self.history[0] == 'matmul':
-                grad1, grad2 = self.grad_matmul(gradients)
-            if self.history[0] == 'add':
-                grad1, grad2 = self.grad_add(gradients)
-            else:
-                grad1, grad2 = None, None
+        if self.history[0] != 'leaf':
 
-            if gradients != None:
+            if self.history[0] == 'matmul':
+
+                (grad1, grad2) = self.grad_matmul(gradients)
+
+            elif self.history[0] == 'add':
+
+                (grad1, grad2) = self.grad_add(gradients)
+
+            if gradients is not None:
+
                 grad1 += gradients
                 grad2 += gradients
 
             self.history[1].backward(grad1)
             self.history[2].backward(grad2)
-            
+
             
 

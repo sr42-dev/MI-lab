@@ -126,7 +126,8 @@ class AdaBoost:
             sumAlphas += self.alphas[i]
 
         pred = [(self.alphas[0] * self.stumps[0].predict(X)) / sumAlphas for i in range(len(self.alphas))]
-        pred = np.sign(np.sum(pred).astype(int))    
+        pred = np.sign(np.sum(pred).astype(int))
+        print(pred)    
 
         return pred
 
